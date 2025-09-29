@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Virtual environments
+venv/
+.env/
+.envrc
+*.env
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Logs
+*.log
+logs/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage / Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Docker
+*.pid
+*.seed
+*.tar
+*.bak
+
+# Local config
+requirements.txt.lock
+uv.lock
