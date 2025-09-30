@@ -1,4 +1,4 @@
-name: Trivy Security Scan (Code & Docker Image)
+name: SecAI Demo Project Scan
 on:
   workflow_dispatch:
 env:
