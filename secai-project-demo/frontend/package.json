@@ -1,0 +1,19 @@
+{
+  "name": "secai-vulnerable-demo",
+  "version": "1.0.0",
+  "description": "A demo application with known vulnerabilities for testing Trivy scans",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "lodash": "4.17.10",
+    "jquery": "1.12.4",
+    "express": "4.15.2",
+    "handlebars": "4.0.12"
+  },
+  "keywords": ["vulnerable", "demo", "trivy"],
+  "author": "SECai Assistant",
+  "license": "MIT"
+}
