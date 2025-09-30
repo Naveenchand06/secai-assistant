@@ -54,7 +54,7 @@ jobs:
   deploy-to-ecs:
     runs-on: ubuntu-latest
     needs: build-and-push-backend
-    if: ${{ needs.build-and-push-backend.outputs.image_tag != '' && github.event.inputs.update_ecs == 'true' }}
+    if: ${{ needs.build-and-push-backend.outputs.image_version != '' && github.event.inputs.update_ecs == 'true' }}
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
