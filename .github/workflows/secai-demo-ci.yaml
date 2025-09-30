@@ -50,13 +50,13 @@ jobs:
       # Combining Both Scan results as a single JSON
       - name: Combine Scan Results into Single JSON Payload
         run: |
-          jq -n \
-            --argfile fs_results trivy-fs-results.json \
-            --argfile image_results trivy-image-results.json \
-            '{
-              "trivy-fs-scan-result": $fs_results,
-              "trivy-docker-image-scan-result": $image_results
-            }' > combined-trivy-results.json
+          run: |
+          cat trivy-fs-results.json trivy-image-results.json | jq -s '
+            {
+              "trivy-fs-scan-result": .[0],
+              "trivy-docker-image-scan-result": .[1]
+            }
+          ' > combined-trivy-results.json
 
       # API call to SecAI Server to get resultss
       - name: POST Combined Scan Results to SecAI Endpoint
