@@ -22,7 +22,7 @@ jobs:
   build-and-push-backend:
     runs-on: ubuntu-latest
     outputs:
-      image_tag: ${{ steps.set-image-tag.outputs.IMAGE_TAG }}
+      image_version: ${{ steps.set-image-tag.outputs.IMAGE_VERSION }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,9 +39,9 @@ jobs:
       - name: Define Image Tag and Set Output
         id: set-image-tag
         run: |
-          IMAGE_TAG="${{ env.DOCKER_USERNAME }}/secai-backend:v0.1.${{ github.run_number }}"
-          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_OUTPUT
-          echo "Image TAG is: $IMAGE_TAG"
+          IMAGE_VERSION="v0.1.${{ github.run_number }}"
+          echo "IMAGE_VERSION=$IMAGE_VERSION" >> $GITHUB_OUTPUT
+          echo "Generated Image Version: $IMAGE_VERSION"
 
       - name: Build and push Backend image
         uses: docker/build-push-action@v5
@@ -63,6 +63,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Full Image Tag
+        id: full-tag
+        run: |
+          FULL_IMAGE_TAG="${{ env.DOCKER_USERNAME }}/secai-backend:${{ needs.build-and-push-backend.outputs.image_version }}"
+          echo "FULL_IMAGE_TAG=$FULL_IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "Reconstructed Full Image Tag: $FULL_IMAGE_TAG"
+
       - name: Downloading Task Definition from AWS
         id: download-task-def
         run: |
@@ -78,7 +85,7 @@ jobs:
         with:
           task-definition: ${{ env.TEMP_TASK_DEFINITION_FILE }}
           container-name: ${{ env.CONTAINER_NAME_IN_TASK_DEF }}
-          image: ${{ needs.build-and-push-backend.outputs.image_tag }}
+          image: ${{ steps.full-tag.outputs.FULL_IMAGE_TAG }}
 
       - name: Deploy to Amazon ECS Service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2

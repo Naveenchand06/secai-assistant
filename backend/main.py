@@ -15,7 +15,7 @@ load_dotenv()
 
 app = FastAPI(title="SecAI", version="0.1.0")
 
-model = ChatCerebras(model="llama3.1-8b")
+model = ChatCerebras(model=os.getenv("CEREBRAS_MODEL", 'llama3.1-8b'))
 
 # State structure 
 class ScanState(dict):
