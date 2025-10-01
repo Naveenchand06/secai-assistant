@@ -5,11 +5,31 @@ import os
 import uvicorn
 from dotenv import load_dotenv
 from langgraph_agents import scan_app, ScanState
+from database import scan_analysis_collection, scan_analysis_helper, test_connection, client
+from models.scan_analysis import ScanAnalysis
+from datetime import datetime
+from contextlib import asynccontextmanager
 
 # Load environment variables from .env file
 load_dotenv()
 
-app = FastAPI(title="SecAI", version="0.1.0")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Test database connection on startup
+    """
+    try:
+        connection_success = await test_connection()
+        if connection_success:
+            print("Database connection successful!")
+        else:
+            print("Database connection failed!")
+    except Exception as e:
+        print(f"Error testing database connection: {e}")
+
+    yield 
+
+app = FastAPI(title="SecAI", version="0.1.0", lifespan=lifespan)
 
 # CORS middleware to allow requests for receiving webhooks from GitHub Actions
 app.add_middleware(
@@ -26,6 +46,7 @@ async def health_check():
     Health check endpoint to verify the application is running
     """
     return {"status": "healthy", "message": "SecAI DevSecOps Assistant is running....;) 💚"}
+
 
 @app.post("/scan/docker")
 async def receive_docker_scan(request: Request):
@@ -54,18 +75,11 @@ async def receive_docker_scan(request: Request):
             detail=f"Error processing request: {str(e)}"
         )
     
-    # Check if the JSON object is empty
-    if not scan_result:
-        raise HTTPException(
-            status_code=400,
-            detail="Empty JSON object received. Please provide Docker scan results in JSON format."
-        )
-    
-    print_scan_results = os.getenv("PRINT_SCAN_RESULTS", "True").lower() == "true"
-    # Printingf for debugging purposes
-    if print_scan_results:
-        print("Received Docker scan result:")
-        print(json.dumps(scan_result, indent=2))
+    # print_scan_results = os.getenv("PRINT_SCAN_RESULTS", "True").lower() == "true"
+    # # Printingf for debugging purposes
+    # if print_scan_results:
+    #     print("Received Docker scan result:")
+    #     print(json.dumps(scan_result, indent=2))
     
     # Using LangGraph multi-agent system to process the scanresult
     try:
@@ -79,14 +93,36 @@ async def receive_docker_scan(request: Request):
         
         final_state = scan_app.invoke(initial_state)
         
-        # Return success response
-        return {
+        # Create scan analysis object
+        scan_analysis = ScanAnalysis(
+            status="success",
+            message="Docker scan result received and processed through multi-agent system",
+            human_readable=final_state.get("human_readable", ""),
+            risk_analysis=final_state.get("risk_analysis", ""),
+            solutions=final_state.get("solutions", ""),
+            scan_data=scan_result,
+            created_at=datetime.now()
+        )
+        
+        # Save to MongoDB
+        scan_analysis_dict = scan_analysis.model_dump()
+        scan_analysis_dict.pop("id", None)
+        
+        # Insert into database
+        result = await scan_analysis_collection.insert_one(scan_analysis_dict)
+        
+        # Add the MongoDB document ID to the response
+        response_data = {
+            "id": str(result.inserted_id),
             "status": "success",
             "message": "Docker scan result received and processed through multi-agent system",
             "human_readable": final_state.get("human_readable", ""),
             "risk_analysis": final_state.get("risk_analysis", ""),
             "solutions": final_state.get("solutions", "")
         }
+        
+        # Return success response
+        return response_data
     except Exception as e:
         raise HTTPException(
             status_code=500,
