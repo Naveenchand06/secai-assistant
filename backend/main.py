@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 import json
 import os
@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 from langgraph_agents import scan_app, ScanState
 from database import scan_analysis_collection, scan_analysis_helper, test_connection, client
 from models.scan_analysis import ScanAnalysis
+from models.user import UserCreate, UserLogin
+from services.auth_service import register_user, login_user, get_current_user
 from datetime import datetime
 from contextlib import asynccontextmanager
 
@@ -48,8 +50,24 @@ async def health_check():
     return {"status": "healthy", "message": "SecAI DevSecOps Assistant is running....;) 💚"}
 
 
+@app.post("/register")
+async def register(user_data: UserCreate):
+    """
+    Register a new user
+    """
+    return await register_user(user_data)
+
+
+@app.post("/login")
+async def login(user_data: UserLogin):
+    """
+    Login endpoint to authenticate user and return JWT token
+    """
+    return await login_user(user_data)
+
+
 @app.post("/scan/docker")
-async def receive_docker_scan(request: Request):
+async def receive_docker_scan(request: Request, current_user: dict = Depends(get_current_user)):
     """
     Endpoint to receive Docker scan results from GitHub Actions workflow
     """

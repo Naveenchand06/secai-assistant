@@ -39,6 +39,7 @@ def user_helper(user) -> dict:
         "id": str(user["_id"]),
         "username": user["username"],
         "email": user["email"],
+        "hashed_password": user.get("hashed_password", user.get("password", "")),
         "projects": user["projects"],
         "created_at": user["created_at"],
         "updated_at": user["updated_at"]

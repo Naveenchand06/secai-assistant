@@ -9,6 +9,11 @@ async def add_user(user_data: dict) -> dict:
     user_data["created_at"] = datetime.now()
     user_data["updated_at"] = datetime.now()
     
+    # Hash password if present
+    if "password" in user_data:
+        from services.auth_service import get_password_hash
+        user_data["hashed_password"] = get_password_hash(user_data.pop("password"))
+    
     user = await user_collection.insert_one(user_data)
     new_user = await user_collection.find_one({"_id": user.inserted_id})
     return user_helper(new_user)
