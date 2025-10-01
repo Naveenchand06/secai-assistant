@@ -128,7 +128,7 @@ async def health_check():
     """
     Health check endpoint to verify the application is running
     """
-    return {"status": "healthy", "message": "SecAI DevSecOps Assistant is running 💚"}
+    return {"status": "healthy", "message": "SecAI DevSecOps Assistant is running....;) 💚"}
 
 @app.post("/scan/docker")
 async def receive_docker_scan(request: Request):
@@ -138,27 +138,31 @@ async def receive_docker_scan(request: Request):
     # Check if request body is empty
     body = await request.body()
     if not body:
-        return {
-            "status": "error",
-            "message": "Empty request body received. Please provide Docker scan results in JSON format.",
-            "explanation": None
-        }
+        raise HTTPException(
+            status_code=400,
+            detail="Empty request body received. Please provide Docker scan results in JSON format."
+        )
 
     # Get the JSON body from the request
     try:
         scan_result = await request.json()
     except json.JSONDecodeError as e:
-        return {
-            "status": "error",
-            "message": "Invalid JSON format received. Please provide a valid JSON format.",
-            "explanation": None
-        }
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid JSON format received. Please provide a valid JSON format."
+        )
     except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Error processing request: {str(e)}",
-            "explanation": None
-        }
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error processing request: {str(e)}"
+        )
+    
+    # Check if the JSON object is empty
+    if not scan_result:
+        raise HTTPException(
+            status_code=400,
+            detail="Empty JSON object received. Please provide Docker scan results in JSON format."
+        )
     
     print_scan_results = os.getenv("PRINT_SCAN_RESULTS", "True").lower() == "true"
     # Printingf for debugging purposes
@@ -187,13 +191,10 @@ async def receive_docker_scan(request: Request):
             "solutions": final_state.get("solutions", "")
         }
     except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Failed to process scan result through multi-agent system: {str(e)}",
-            "human_readable": None,
-            "risk_analysis": None,
-            "solutions": None
-        }
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to process scan result: {str(e)}"
+        )
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
