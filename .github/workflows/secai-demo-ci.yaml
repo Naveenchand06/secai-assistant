@@ -50,13 +50,32 @@ jobs:
       # Combining Both Scan results as a single JSON
       - name: Combine Scan Results into Single JSON Payload
         run: |
-          run: |
-          cat trivy-fs-results.json trivy-image-results.json | jq -s '
+          jq -s '
+            def filter_trivy_results:
+              (.Results // []) |                                    
+              map(
+                . as $parent | {
+                  Target: $parent.Target,
+                  Class: $parent.Class,
+                  Type: $parent.Type,
+                  Vulnerabilities: (
+                    ($parent.Vulnerabilities // []) | map({
+                      VulnerabilityID: .VulnerabilityID,
+                      PkgName: .PkgName,
+                      InstalledVersion: .InstalledVersion,
+                      Severity: .Severity,
+                      Description: .Description,
+                      PrimaryURL: (.PrimaryURL | select(. != null))
+                    })
+                  )
+                }
+              );
+
             {
-              "trivy-fs-scan-result": .[0],
-              "trivy-docker-image-scan-result": .[1]
+              "trivy-fs-scan-result": (.[0] | filter_trivy_results),
+              "trivy-docker-image-scan-result": (.[1] | filter_trivy_results)
             }
-          ' > combined-trivy-results.json
+          ' trivy-fs-results.json trivy-image-results.json > combined-trivy-results.json
 
       # API call to SecAI Server to get resultss
       - name: POST Combined Scan Results to SecAI Endpoint
