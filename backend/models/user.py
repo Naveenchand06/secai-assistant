@@ -1,10 +1,13 @@
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 from datetime import datetime
+import uuid
 
 class Project(BaseModel):
-    project_name: str
     project_id: str
+    project_name: str
+    project_description: Optional[str] = None
+    created_at: Optional[datetime] = None
 
 class UserCreate(BaseModel):
     username: str

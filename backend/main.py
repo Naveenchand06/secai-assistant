@@ -7,10 +7,17 @@ from dotenv import load_dotenv
 from langgraph_agents import scan_app, ScanState
 from database import scan_analysis_collection, scan_analysis_helper, test_connection, client
 from models.scan_analysis import ScanAnalysis
-from models.user import UserCreate, UserLogin
+from models.user import UserCreate, UserLogin, Project
 from services.auth_service import register_user, login_user, get_current_user
+from services.project_service import create_project, get_user_projects
 from datetime import datetime
 from contextlib import asynccontextmanager
+from pydantic import BaseModel
+
+# Project creation request model
+class ProjectCreate(BaseModel):
+    project_name: str
+    project_description: str = None
 
 # Load environment variables from .env file
 load_dotenv()
@@ -65,6 +72,23 @@ async def login(user_data: UserLogin):
     """
     return await login_user(user_data)
 
+
+@app.post("/projects")
+async def create_new_project(project_data: ProjectCreate, current_user: dict = Depends(get_current_user)):
+    """Create a new project for the authenticated user"""
+    project = await create_project(current_user.email, project_data.project_name, project_data.project_description)
+    if project:
+        return project
+    raise HTTPException(
+        status_code=500,
+        detail="Failed to create project"
+    )
+
+@app.get("/projects")
+async def list_user_projects(current_user: dict = Depends(get_current_user)):
+    """Get all projects for the authenticated user"""
+    projects = await get_user_projects(current_user.email)
+    return projects
 
 @app.post("/scan/docker")
 async def receive_docker_scan(request: Request, current_user: dict = Depends(get_current_user)):
