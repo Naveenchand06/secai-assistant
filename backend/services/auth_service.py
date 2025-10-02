@@ -61,14 +61,6 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 async def register_user(user_data: UserCreate) -> dict:
     """Register a new user"""
-    # Check if username already exists
-    # existing_user = await user_collection.find_one({"username": user_data.username})
-    # if existing_user:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_400_BAD_REQUEST,
-    #         detail="Username already registered"
-    #     )
-    
     # Check if email already exists
     existing_email = await user_collection.find_one({"email": user_data.email})
     if existing_email:
