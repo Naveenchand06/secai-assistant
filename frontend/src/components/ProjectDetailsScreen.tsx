@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import ExpandableSection from './ExpandableSection';
+import ExpandableScanResultCard from './ExpandableScanResultCard';
 
 interface APIKey {
     key: string;
@@ -314,40 +315,11 @@ const ProjectDetailsScreen: React.FC = () => {
                     ) : (
                         <div className="space-y-6">
                             {[...scanResults].reverse().map((scanResult) => (
-                                <div key={scanResult.id} className="border border-gray-200 rounded-lg p-4 hover:border-2 hover:border-blue-500 transition-all duration-200">
-                                    <div className="flex justify-between items-center mb-3">
-                                        <h3 className="text-lg text-gray-900">
-                                            <span className="font-bold">Scan Result: </span>#{scanResult.id}
-                                        </h3>
-                                        <span className="text-sm text-gray-500">
-                                            {scanResult.created_at ? formatDate(scanResult.created_at) : 'Unknown date'}
-                                        </span>
-                                    </div>
-
-                                    <ExpandableSection
-                                        title="Summary"
-                                        content={scanResult.human_readable}
-                                        isMarkdown={true}
-                                    />
-
-                                    <ExpandableSection
-                                        title="Risk Analysis"
-                                        content={scanResult.risk_analysis}
-                                        isMarkdown={true}
-                                    />
-
-                                    <ExpandableSection
-                                        title="Solutions"
-                                        content={scanResult.solutions}
-                                        isMarkdown={true}
-                                    />
-
-                                    <ExpandableSection
-                                        title="Raw Scan Data"
-                                        content={JSON.stringify(scanResult.scan_data, null, 2)}
-                                        isMarkdown={false}
-                                    />
-                                </div>
+                                <ExpandableScanResultCard
+                                    key={scanResult.id}
+                                    scanResult={scanResult}
+                                    formatDate={formatDate}
+                                />
                             ))}
                         </div>
                     )}
