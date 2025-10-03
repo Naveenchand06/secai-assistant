@@ -182,9 +182,17 @@ const ProjectDetailsScreen: React.FC = () => {
                     >
                         ← Back to Projects
                     </button>
+
                     <h1 className="text-3xl font-extrabold text-gray-900">Project Details</h1>
-                    <div></div> {/* Empty div for spacing */}
+
+                    <Link
+                        to={`/projects/${projectId}/api-keys`}
+                        className="py-2 px-2 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 shadow-lg hover:shadow-xl"
+                    >
+                        Manage API Keys
+                    </Link>
                 </div>
+
 
                 {project && (
                     <div className="bg-white p-6 rounded-xl shadow-lg mb-8">
@@ -226,7 +234,7 @@ const ProjectDetailsScreen: React.FC = () => {
                     </div>
                 )}
 
-                <div className="bg-white p-6 rounded-xl shadow-lg mb-8">
+                {/* <div className="bg-white p-6 rounded-xl shadow-lg mb-8">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-2xl font-bold text-gray-900">API Keys</h2>
                         <Link
@@ -280,7 +288,7 @@ const ProjectDetailsScreen: React.FC = () => {
                             ))}
                         </div>
                     )}
-                </div>
+                </div> */}
 
                 <div className="bg-white p-6 rounded-xl shadow-lg">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Docker Scan Results</h2>
