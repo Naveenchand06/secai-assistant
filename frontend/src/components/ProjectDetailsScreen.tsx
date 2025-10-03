@@ -302,10 +302,10 @@ const ProjectDetailsScreen: React.FC = () => {
                         </div>
                     ) : (
                         <div className="space-y-6">
-                            {[...scanResults].reverse().map((scanResult, index) => (
+                            {[...scanResults].reverse().map((scanResult) => (
                                 <div key={scanResult.id} className="border border-gray-200 rounded-lg p-4 hover:border-2 hover:border-blue-500 transition-all duration-200">
                                     <div className="flex justify-between items-center mb-3">
-                                        <h3 className="text-lg font-medium text-gray-900">Scan Result {index + 1}</h3>
+                                        <h3 className="text-lg font-medium text-gray-900">Scan Result #{scanResult.id}</h3>
                                         <span className="text-sm text-gray-500">
                                             {scanResult.created_at ? formatDate(scanResult.created_at) : 'Unknown date'}
                                         </span>
