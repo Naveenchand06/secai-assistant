@@ -57,7 +57,7 @@ const CreateProjectScreen: React.FC = () => {
                     </h2>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    <div className="rounded-md shadow-sm -space-y-px">
+                    <div className="rounded-md shadow-sm-space-y-px">
                         <div className="mb-4">
                             <label htmlFor="projectName" className="block text-sm font-medium text-gray-700 mb-1">
                                 Project Name

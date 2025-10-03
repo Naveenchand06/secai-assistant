@@ -6,6 +6,7 @@ import LandingScreen from './components/LandingScreen';
 import ProjectListScreen from './components/ProjectListScreen';
 import ProjectDetailsScreen from './components/ProjectDetailsScreen';
 import ApiKeyManagementScreen from './components/ApiKeyManagementScreen';
+import LandingPage from './components/LandingPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -13,7 +14,8 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<LoginScreen />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginScreen />} />
         <Route path="/register" element={<RegisterScreen />} />
         <Route path="/login" element={<LoginScreen />} />
         <Route path="/projects" element={
