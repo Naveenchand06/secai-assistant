@@ -25,7 +25,7 @@ const ExpandableScanResultCard: React.FC<ExpandableScanResultCardProps> = ({ sca
     };
 
     return (
-        <div className="border-2 border-gray-200 rounded-lg hover:border-2 hover:border-blue-500 transition-all duration-200">
+        <div className="border-2 border-gray-200 rounded-lg hover:border-2 hover:border-violet-500 transition-all duration-200">
             <div
                 className="flex justify-between items-center p-4 cursor-pointer bg-white rounded-lg"
                 onClick={toggleExpanded}

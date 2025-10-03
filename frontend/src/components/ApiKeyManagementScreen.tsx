@@ -80,7 +80,7 @@ const ApiKeyManagementScreen: React.FC = () => {
 
     const handleDeleteApiKey = async (apiKey: string) => {
         try {
-            const response = await fetch(`http://localhost:8000/projects/${projectId}/api-keys/${apiKey}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/projects/${projectId}/api-keys/${apiKey}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,

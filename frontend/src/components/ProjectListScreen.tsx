@@ -22,7 +22,7 @@ const ProjectListScreen: React.FC = () => {
 
     const fetchProjects = async () => {
         try {
-            const response = await fetch('http://localhost:8000/projects', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/projects`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,

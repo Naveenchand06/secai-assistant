@@ -16,7 +16,7 @@ const ExpandableSection: React.FC<ExpandableSectionProps> = ({ title, content, i
     };
 
     return (
-        <div className="border border-gray-200 rounded-lg p-4 mb-4">
+        <div className="border-2 border-gray-200 rounded-lg p-4 mb-4 hover:border-2 hover:border-purple-400">
             <div className="flex justify-between items-center cursor-pointer" onClick={toggleExpanded}>
                 <h4 className="font-medium text-gray-900">{title}</h4>
                 <svg
