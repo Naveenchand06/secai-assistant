@@ -53,7 +53,7 @@ const ProjectDetailsScreen: React.FC = () => {
 
     const fetchScanResults = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/projects/${projectId}/scan-results`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/projects/${projectId}/scan-results`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -75,7 +75,7 @@ const ProjectDetailsScreen: React.FC = () => {
 
     const fetchProjectDetails = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/projects/${projectId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/projects/${projectId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
