@@ -9,4 +9,6 @@ class ScanAnalysis(BaseModel):
     risk_analysis: str
     solutions: str
     scan_data: Dict[str, Any]
+    project_id: Optional[str] = None
+    project_name: Optional[str] = None
     created_at: Optional[datetime] = None

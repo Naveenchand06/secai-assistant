@@ -110,7 +110,11 @@ const ProjectListScreen: React.FC = () => {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {projects.map((project) => (
-                            <div key={project.project_id} className="bg-white p-6 rounded-xl shadow-lg bg-gradient-to-br from-white to-gray-50 transition duration-300 hover:shadow-xl">
+                            <div
+                                key={project.project_id}
+                                onClick={() => navigate(`/projects/${project.project_id}`)}
+                                className="bg-white p-6 rounded-xl shadow-lg bg-gradient-to-br from-white to-gray-50 transition duration-300 hover:shadow-xl cursor-pointer"
+                            >
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-xl font-bold text-gray-900">{project.project_name}</h3>
                                     <div className="bg-indigo-100 rounded-full p-2">

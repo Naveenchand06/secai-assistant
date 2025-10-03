@@ -3,11 +3,18 @@ from typing import List, Dict, Optional
 from datetime import datetime
 import uuid
 
+class APIKey(BaseModel):
+    key: str
+    created_at: datetime
+    expires_at: datetime
+    is_active: bool = True
+
 class Project(BaseModel):
     project_id: str
     project_name: str
     project_description: Optional[str] = None
     created_at: Optional[datetime] = None
+    api_keys: Optional[List[APIKey]] = []
 
 class UserCreate(BaseModel):
     username: str

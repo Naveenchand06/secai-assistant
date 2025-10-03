@@ -5,6 +5,7 @@ import LoginScreen from './components/LoginScreen';
 import CreateProjectScreen from './components/CreateProjectScreen';
 import LandingScreen from './components/LandingScreen';
 import ProjectListScreen from './components/ProjectListScreen';
+import ProjectDetailsScreen from './components/ProjectDetailsScreen';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -18,6 +19,11 @@ function App() {
         <Route path="/projects" element={
           <ProtectedRoute>
             <ProjectListScreen />
+          </ProtectedRoute>
+        } />
+        <Route path="/projects/:projectId" element={
+          <ProtectedRoute>
+            <ProjectDetailsScreen />
           </ProtectedRoute>
         } />
         <Route path="/create-project" element={
