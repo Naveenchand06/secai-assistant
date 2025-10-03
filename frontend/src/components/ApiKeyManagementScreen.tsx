@@ -51,7 +51,7 @@ const ApiKeyManagementScreen: React.FC = () => {
 
     const handleCreateApiKey = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/projects/${projectId}/api-keys`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/projects/${projectId}/api-keys`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
