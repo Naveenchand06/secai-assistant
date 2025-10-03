@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import ExpandableSection from './ExpandableSection';
 import ExpandableScanResultCard from './ExpandableScanResultCard';
+import { Copy } from 'lucide-react';
 
 interface APIKey {
     key: string;
@@ -130,6 +128,10 @@ const ProjectDetailsScreen: React.FC = () => {
         return new Date(dateString).toLocaleString();
     };
 
+    const handleCopy = (text: string) => {
+        navigator.clipboard.writeText(text);
+    };
+
     const isApiKeyExpired = (expiresAt: string) => {
         return new Date(expiresAt) < new Date();
     };
@@ -198,6 +200,16 @@ const ProjectDetailsScreen: React.FC = () => {
                 {project && (
                     <div className="bg-white p-6 rounded-xl shadow-lg mb-8">
                         <h2 className="text-2xl font-bold text-gray-900 mb-2">{project.project_name}</h2>
+                        <p className="text-gray-900 mb-2 flex items-center gap-2">
+                            <span className="font-bold">Project ID:</span> {project.project_id}
+                            <button
+                                onClick={() => handleCopy(project.project_id)}
+                                className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                                aria-label="Copy Project ID"
+                            >
+                                <Copy size={16} />
+                            </button>
+                        </p>
                         <p className="text-gray-600 mb-4">{project.project_description || 'No description provided'}</p>
                         <div className="text-sm text-gray-500">
                             Created: {project.created_at ? formatDate(project.created_at) : 'Unknown date'}
@@ -234,62 +246,6 @@ const ProjectDetailsScreen: React.FC = () => {
                         </div>
                     </div>
                 )}
-
-                {/* <div className="bg-white p-6 rounded-xl shadow-lg mb-8">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-2xl font-bold text-gray-900">API Keys</h2>
-                        <Link
-                            to={`/projects/${projectId}/api-keys`}
-                            className="py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 shadow-lg hover:shadow-xl"
-                        >
-                            Manage API Keys
-                        </Link>
-                    </div>
-
-                    {apiKeys.length === 0 ? (
-                        <div className="text-center py-8">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                            </svg>
-                            <p className="text-gray-500">No API keys have been created for this project yet.</p>
-                        </div>
-                    ) : (
-                        <div className="space-y-4">
-                            {apiKeys.map((apiKey) => (
-                                <div key={apiKey.key} className="border border-gray-200 rounded-lg p-4">
-                                    <div className="flex justify-between items-start">
-                                        <div className="flex-1">
-                                            <div className="flex items-center space-x-2 mb-2">
-                                                <code className="text-sm font-mono bg-gray-100 p-2 rounded flex-1 break-all">
-                                                    {apiKey.key}
-                                                </code>
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
-                                                <div>
-                                                    <span className="font-medium">Created:</span> {formatDate(apiKey.created_at)}
-                                                </div>
-                                                <div>
-                                                    <span className="font-medium">Expires:</span> {formatDate(apiKey.expires_at)}
-                                                </div>
-                                                <div>
-                                                    <span className="font-medium">Status:</span>
-                                                    <span className={`ml-2 px-2 py-1 rounded text-xs ${isApiKeyExpired(apiKey.expires_at)
-                                                        ? 'bg-red-100 text-red-800'
-                                                        : apiKey.is_active
-                                                            ? 'bg-green-100 text-green-800'
-                                                            : 'bg-yellow-100 text-yellow-800'
-                                                        }`}>
-                                                        {isApiKeyExpired(apiKey.expires_at) ? 'Expired' : apiKey.is_active ? 'Active' : 'Inactive'}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div> */}
 
                 <div className="bg-white p-6 rounded-xl shadow-lg">
                     <div className="flex justify-between items-center mb-4">

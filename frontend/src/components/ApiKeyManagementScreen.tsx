@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+
 
 interface APIKey {
     key: string;
@@ -16,7 +17,6 @@ const ApiKeyManagementScreen: React.FC = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [validityDays, setValidityDays] = useState(30);
-    const navigate = useNavigate();
     const { token } = useAuth();
 
     useEffect(() => {
@@ -223,6 +223,7 @@ const ApiKeyManagementScreen: React.FC = () => {
                                                 <code className="text-sm font-mono bg-gray-100 p-2 rounded flex-1 break-all">
                                                     {apiKey.key}
                                                 </code>
+
                                             </div>
                                             <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
                                                 <div>
@@ -244,6 +245,7 @@ const ApiKeyManagementScreen: React.FC = () => {
                                                 </div>
                                             </div>
                                         </div>
+
                                         <button
                                             onClick={() => handleDeleteApiKey(apiKey.key)}
                                             className="ml-4 py-1 px-3 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300 shadow hover:shadow-lg"
