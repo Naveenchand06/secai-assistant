@@ -82,10 +82,12 @@ jobs:
         run: |
           # Send the combined JSON payload and print response body
           curl -s -o response.json -w "\nHTTP Status: %{http_code}\n" \
-            -X POST \
-            -H "Content-Type: application/json" \
-            --data-binary "@combined-trivy-results.json" \
-            http://${{ secrets.SECAI_SERVER_IP }}:8000/scan/docker
+          -X POST \
+          -H "Content-Type: application/json" \
+          -H "x-api-key: ${{ secrets.SECAI_PROJECT_API_KEY }}" \
+          --data-binary "@combined-trivy-results.json" \
+          ${{ secrets.SECAI_URL }}/projects/${{secrets.SECAI_PROJECT_ID}}/scan/docker
+
 
           echo "---- Server Response ----"
           cat response.json
