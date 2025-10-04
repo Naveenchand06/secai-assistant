@@ -17,6 +17,8 @@ This project is powered by **[Cerebras](https://cloud.cerebras.ai)** and **[Meta
 
 > ⚡ SecAI Assistant uses **Cerebras Cloud AI** to process vulnerability scan results, making analysis significantly faster compared to other LLMs such as **GPT** or **Gemini Models**.
 
+Special thanks to **[WeMakeDevs](https://github.com/WeMakeDevs)** for organizing the [FuturStack GenAI Hackathon](https://www.wemakedevs.org/hackathons/futurestack25)
+
 ---
 
 ## 🚀 Live Demo & Access
