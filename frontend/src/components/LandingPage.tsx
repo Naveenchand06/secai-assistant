@@ -53,14 +53,12 @@ const steps: Step[] = [
         title: 'Integrate into Your CI/CD',
         description: 'Use the `curl` command in your pipeline (e.g., GitHub Actions) to send the JSON scan results (from Trivy, etc.) to your SecAI endpoint. ',
         codeBlock: `
-        - name: POST Scan Results to SecAI Endpoint
-          run: |
-            curl -s -o response.json -w "\\nHTTP Status: %{http_code}\\n" \\
-            -X POST \\
-            -H "Content-Type: application/json" \\
-            -H "x-api-key: \${{ secrets.SECAI_PROJECT_API_KEY }}" \\
-            --data-binary "@combined-trivy-results.json" \\
-            \${{ secrets.SECAI_URL }}/projects/\${{secrets.SECAI_PROJECT_ID}}/scan/docker
+            - name: Upload Scan Results to SecAI
+              uses: Naveenchand06/secai-assistant/secai-action@v1.0.0
+              with:
+                  secai-url: <secrets.SECAI_URL>
+                  project-id: <secrets.SECAI_PROJECT_ID>
+                  api-key: <secrets.SECAI_PROJECT_API_KEY>
         `,
     },
     {
