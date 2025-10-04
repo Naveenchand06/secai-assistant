@@ -43,8 +43,8 @@ This repository is structured as a **monorepo** to manage the different componen
 | Folder          | Description                                                                                            | Technology Stack                              |
 | --------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
 | `frontend/`     | The user interface for viewing scan results, analysis, and remediation suggestions.                    | React, TypeScript, Tailwind CSS, Vercel       |
-| `backend/`      | The core API service responsible for data ingestion, authentication, and communication with AI models. | Python, Fast API, Meta Llama Models, Cerebras |
-| `secai-action/` | The source code for the official GitHub Action that uploads Trivy JSON reports to the backend.         | Composite Action (Shell Script)               |
+| `backend/`      | The core API service responsible for data ingestion, authentication, and communication with AI models. | Python, Fast API, Meta Llama Models, Cerebras, Google Cloud |
+| `secai-action/` | The source code for the official GitHub Action that uploads Trivy JSON reports to the backend.         | Composite Action (Shell Script), YAML               |
 
 ---
 
@@ -56,7 +56,7 @@ The action automatically posts your vulnerability scan results to the SecAI back
 
 ```yaml
 - name: Upload Scan Results to SecAI
-  uses: Naveenchand06/secai-assistant/secai-action@v1
+  uses: Naveenchand06/secai-assistant/secai-action@v1.0.0
   with:
     secai-url: ${{ secrets.SECAI_URL }}
     project-id: ${{ secrets.SECAI_PROJECT_ID }}
