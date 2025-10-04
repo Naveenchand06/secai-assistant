@@ -1,0 +1,64 @@
+name: "SecAI Scan Uploader"
+description: "Uploads Trivy JSON scan results to the SecAI backend for AI-powered vulnerability analysis."
+
+# Required Inputs
+inputs:
+  secai-url:
+    description: "The base URL of your SecAI API server (e.g., https://secai.run.app)."
+    required: true
+  project-id:
+    description: "The unique ID of the SecAI project, linked to the API key."
+    required: true
+  api-key:
+    description: "The API key for authentication."
+    required: true
+  scan-file-path:
+    description: "The local path to the Trivy JSON file to upload."
+    required: true
+    default: "combined-trivy-results.json"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check for Scan File
+      shell: bash
+      run: |
+        SCAN_FILE="${{ inputs.scan-file-path }}"
+        if [ ! -f "$SCAN_FILE" ]; then
+          echo "::error file=$SCAN_FILE::Scan results file not found at path: $SCAN_FILE. Ensure Trivy executed correctly and saved results to correct path and name."
+          exit 1
+        fi
+        echo "Scan file found: $SCAN_FILE"
+
+    - name: Send Scan Results to SecAI Endpoint
+      shell: bash
+      run: |
+        SCAN_FILE="${{ inputs.scan-file-path }}"
+        API_KEY="${{ inputs.api-key }}"
+        PROJECT_ID="${{ inputs.project-id }}"
+        SECAI_URL="${{ inputs.secai-url }}"
+
+        ENDPOINT="$SECAI_URL/projects/$PROJECT_ID/scan/docker"
+
+        echo "Attempting to send scan results to $ENDPOINT"
+
+        HTTP_RESPONSE=$(curl -s -w "HTTP_STATUS:%{http_code}" \
+          -o response.json \
+          -X POST \
+          -H "Content-Type: application/json" \
+          -H "x-api-key: $API_KEY" \
+          --data-binary "@$SCAN_FILE" \
+          "$ENDPOINT")
+
+        HTTP_STATUS=$(echo "$HTTP_RESPONSE" | sed -n 's/.*HTTP_STATUS://p')
+
+        echo "---- SecAI Server Response (HTTP $HTTP_STATUS) ----"
+        cat response.json
+
+        if [[ "$HTTP_STATUS" =~ ^2[0-9]{2}$ ]]; then
+          echo "::notice::Scan results successfully submitted to SecAI."
+        else
+          # Fail the job if status is not 2xx
+          echo "::error::Failed to submit scan results. Server responded with HTTP $HTTP_STATUS. Check API key and Project ID."
+          exit 1
+        fi
