@@ -21,6 +21,11 @@ This project is powered by **[Cerebras](https://cloud.cerebras.ai)** and **[Meta
 
 ## 🚀 Live Demo & Access
 
+🎥 **Watch the Demo Video:**
+
+[![SecAI Demo](https://img.youtube.com/vi/YPyKlW_tZSM/0.jpg)](https://www.youtube.com/watch?v=YPyKlW_tZSM)
+
+
 Experience the SecAI Assistant directly:
 
 ➡️ **Application:** [https://secai-assistant.vercel.app/](https://secai-assistant.vercel.app/)
