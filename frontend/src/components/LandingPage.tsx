@@ -171,7 +171,6 @@ const LandingPage: React.FC = () => {
                                                 <p className="mt-2 text-gray-600">{step.description}</p>
                                                 {step.codeBlock && (
                                                     <div>
-                                                        <p className="mt-2 text-gray-400">Dedicated Github Action Coming Soon</p>
                                                         <pre className="mt-4 p-3 text-xs bg-gray-800 text-gray-100 rounded-md overflow-x-scroll">
                                                             <code>{step.codeBlock.trim()}</code>
                                                         </pre>
