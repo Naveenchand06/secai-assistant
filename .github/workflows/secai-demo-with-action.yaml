@@ -1,0 +1,95 @@
+name: SecAI Demo Project Scan With SecAI Action
+on:
+    workflow_dispatch:
+env:
+    IMAGE_TAG: secai-demo-scan:v1.0.0
+
+jobs:
+    build-image-and-scan:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Build and Load Docker Image
+              uses: docker/build-push-action@v5
+              with:
+                  context: ./backend
+                  tags: ${{ env.IMAGE_TAG }}
+                  load: true
+
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Trivy Filesystem (Codebase) and Secrets Scan
+              uses: aquasecurity/trivy-action@master
+              with:
+                  input: "."
+                  scan-type: "fs"
+                  scanners: "vuln,secret"
+                  exit-code: "0"
+                  ignore-unfixed: true
+                  format: "json"
+                  output: "trivy-fs-results.json"
+
+            - name: Trivy Docker Image Scan
+              uses: aquasecurity/trivy-action@master
+              with:
+                  image-ref: ${{ env.IMAGE_TAG }}
+                  scan-type: "image"
+                  scanners: "vuln"
+                  exit-code: "0"
+                  ignore-unfixed: false
+                  severity: "HIGH,CRITICAL"
+                  format: "json"
+                  output: "trivy-image-results.json"
+
+            # Combining Both Scan results as a single JSON
+            - name: Combine Scan Results into Single JSON Payload
+              run: |
+                  jq -s '
+                    def filter_trivy_results:
+                      (.Results // []) |                                    
+                      map(
+                        . as $parent | {
+                          Target: $parent.Target,
+                          Class: $parent.Class,
+                          Type: $parent.Type,
+                          Vulnerabilities: (
+                            ($parent.Vulnerabilities // []) | map({
+                              VulnerabilityID: .VulnerabilityID,
+                              PkgName: .PkgName,
+                              InstalledVersion: .InstalledVersion,
+                              Severity: .Severity,
+                              Description: .Description,
+                              PrimaryURL: (.PrimaryURL | select(. != null))
+                            })
+                          )
+                        }
+                      );
+
+                    {
+                      "trivy-fs-scan-result": (.[0] | filter_trivy_results),
+                      "trivy-docker-image-scan-result": (.[1] | filter_trivy_results)
+                    }
+                  ' trivy-fs-results.json trivy-image-results.json > combined-trivy-results.json
+
+            - name: Upload Scan Results to SecAI
+              uses: ./secai-action
+              with:
+                  secai-url: ${{ secrets.SECAI_URL }}
+                  project-id: ${{ secrets.SECAI_PROJECT_ID }}
+                  api-key: ${{ secrets.SECAI_PROJECT_API_KEY }}
+
+            - name: Upload Trivy JSON Results
+              uses: actions/upload-artifact@v4
+              with:
+                  name: trivy-json-results
+                  path: |
+                      trivy-fs-results.json
+                      trivy-image-results.json
+                      combined-trivy-results.json
+                  retention-days: 5

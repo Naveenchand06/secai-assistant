@@ -88,7 +88,6 @@ jobs:
           --data-binary "@combined-trivy-results.json" \
           ${{ secrets.SECAI_URL }}/projects/${{secrets.SECAI_PROJECT_ID}}/scan/docker
 
-
           echo "---- Server Response ----"
           cat response.json
 
