@@ -1,5 +1,6 @@
 import React from 'react';
 import { LogIn, Zap, CheckCircle, Code, Shield, Key, Github, Linkedin } from 'lucide-react';
+import dedent from "dedent";
 
 interface Feature {
     icon: React.ElementType;
@@ -52,14 +53,14 @@ const steps: Step[] = [
         step: 3,
         title: 'Integrate into Your CI/CD',
         description: 'Use the `curl` command in your pipeline (e.g., GitHub Actions) to send the JSON scan results (from Trivy, etc.) to your SecAI endpoint. ',
-        codeBlock: `
+        codeBlock: dedent(`
             - name: Upload Scan Results to SecAI
               uses: Naveenchand06/secai-assistant/secai-action@v1.0.0
               with:
                   secai-url: <secrets.SECAI_URL>
                   project-id: <secrets.SECAI_PROJECT_ID>
                   api-key: <secrets.SECAI_PROJECT_API_KEY>
-        `,
+        `),
     },
     {
         step: 4,
@@ -172,7 +173,7 @@ const LandingPage: React.FC = () => {
                                                 {step.codeBlock && (
                                                     <div>
                                                         <pre className="mt-4 p-3 text-xs bg-gray-800 text-gray-100 rounded-md overflow-x-scroll">
-                                                            <code>{step.codeBlock.trim()}</code>
+                                                            <code>{step.codeBlock}</code>
                                                         </pre>
                                                     </div>
                                                 )}
